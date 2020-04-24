@@ -124,6 +124,7 @@ class NewTaskViewController: UIViewController {
   
   func routeToMain() {
     navigationController?.popViewController(animated: true)
+    mainVC?.loadData()
     mainVC?.diaryTableView.reloadData()
   }
   

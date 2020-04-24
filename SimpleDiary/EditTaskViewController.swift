@@ -142,7 +142,8 @@ class EditTaskViewController: UIViewController {
   
   func routeToMain() {
     navigationController?.popViewController(animated: true)
-    mainVC?.view.layoutIfNeeded()
+    mainVC?.loadData()
+    mainVC?.diaryTableView.reloadData()
   }
   
   func saveToMemory() {

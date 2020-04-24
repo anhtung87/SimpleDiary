@@ -10,6 +10,8 @@ import UIKit
 
 class ViewController: UIViewController {
   
+  var tasks: [Task]?
+  
   let diaryTableView: UITableView = {
     let tableView = UITableView()
     tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -24,10 +26,16 @@ class ViewController: UIViewController {
     layoutView()
     setupTableView()
     setupNavigation()
+    loadData()
   }
   
   func addComponent() {
     view.addSubview(diaryTableView)
+  }
+  
+  func loadData() {
+    tasks = []
+    tasks?.append(contentsOf: DBManager.sharedInstance.getAllTask())
   }
   
   func layoutView() {
@@ -56,14 +64,12 @@ class ViewController: UIViewController {
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    let tasks = DBManager.sharedInstance.getAllTask()
-    return tasks.count
+    return tasks!.count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "DiaryCell", for: indexPath) as! DiaryTableViewCell
-    let tasks = DBManager.sharedInstance.getAllTask()
-    cell.task = tasks[indexPath.row]
+    cell.task = tasks![indexPath.row]
     return cell
   }
   
@@ -74,6 +80,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     destinationVC.taskTextField.text = cell.taskNameLabel.text
     destinationVC.startTimeTextField.text = cell.startTimeInputLabel.text
     destinationVC.timeTextField.text = cell.timeInputLabel.text
+    destinationVC.mainVC = self
     navigationController?.show(destinationVC, sender: nil)
     destinationVC.title = "Sửa công việc"
   }

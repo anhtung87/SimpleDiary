@@ -8,9 +8,11 @@
 
 import UIKit
 
-class NewTaskViewController: UIViewController {
+class EditTaskViewController: UIViewController {
   
   var mainVC: ViewController? = nil
+  
+  var taskId: String?
   
   let taskNameLabel: UILabel = {
     let label = UILabel()
@@ -60,12 +62,22 @@ class NewTaskViewController: UIViewController {
     return textField
   }()
   
+  let deleteButton: UIButton = {
+    let button = UIButton()
+    button.translatesAutoresizingMaskIntoConstraints = false
+    button.backgroundColor = .systemRed
+    button.setTitle("Xoá", for: .normal)
+    button.setTitleColor(.white, for: .normal)
+    return button
+  }()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     view.backgroundColor = .white
     setupView()
     layoutView()
     setupNavigation()
+    setupButton()
   }
   
   func setupView() {
@@ -75,6 +87,7 @@ class NewTaskViewController: UIViewController {
     view.addSubview(startTimeTextField)
     view.addSubview(timeLabel)
     view.addSubview(timeTextField)
+    view.addSubview(deleteButton)
   }
   
   func layoutView() {
@@ -109,6 +122,11 @@ class NewTaskViewController: UIViewController {
     timeTextField.leadingAnchor.constraint(equalTo: timeLabel.leadingAnchor).isActive = true
     timeTextField.trailingAnchor.constraint(equalTo: timeLabel.trailingAnchor).isActive = true
     timeTextField.heightAnchor.constraint(equalToConstant: 24).isActive = true
+    
+    deleteButton.topAnchor.constraint(equalTo: timeTextField.bottomAnchor, constant: 32).isActive = true
+    deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    deleteButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.33).isActive = true
+    deleteButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
   }
   
   func setupNavigation() {
@@ -124,7 +142,7 @@ class NewTaskViewController: UIViewController {
   
   func routeToMain() {
     navigationController?.popViewController(animated: true)
-    mainVC?.diaryTableView.reloadData()
+    mainVC?.view.layoutIfNeeded()
   }
   
   func saveToMemory() {
@@ -132,6 +150,16 @@ class NewTaskViewController: UIViewController {
     newTask.name = taskTextField.text!
     newTask.startTime = startTimeTextField.text!
     newTask.time = timeTextField.text!
-    DBManager.sharedInstance.addTask(newTask)
+    newTask.ID = taskId!
+    DBManager.sharedInstance.updateTaskById(taskId!, newTask)
+  }
+  
+  func setupButton() {
+    deleteButton.addTarget(self, action: #selector(deleteTask), for: .touchUpInside)
+  }
+  
+  @objc func deleteTask() {
+    DBManager.sharedInstance.deleteTaskById(taskId!)
+    routeToMain()
   }
 }

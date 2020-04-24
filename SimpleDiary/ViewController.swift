@@ -68,7 +68,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    let destinationVC = NewTaskViewController()
+    let destinationVC = EditTaskViewController()
     let cell = tableView.cellForRow(at: indexPath) as! DiaryTableViewCell
     destinationVC.taskId = cell.taskId
     destinationVC.taskTextField.text = cell.taskNameLabel.text

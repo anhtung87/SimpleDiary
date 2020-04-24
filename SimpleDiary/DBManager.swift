@@ -42,4 +42,11 @@ class DBManager {
     let tasks = database.objects(Task.self).filter(predicate)
     return tasks[0]
   }
+  
+  func deleteTaskById(_ id: String) {
+    let objectsToDelete = database.objects(Task.self).filter("ID = %@", id)
+    try! database.write {
+      database.delete(objectsToDelete)
+    }
+  }
 }
